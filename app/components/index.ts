@@ -1,2 +1,5 @@
 export * from "./AddBankCard"
 export *from "./Clerk"
+export * from "./CreateProfile"
+export * from "./NavBar"
+export * from "./Header"

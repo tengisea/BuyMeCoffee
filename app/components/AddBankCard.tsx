@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma"; // server-д байгаа, client-д ашиглахгүй
 import Form from "next/form";
+import { auth } from "@clerk/nextjs/server"; // Add this import at the top
 
 export const AddBankCard = () => {
   async function addBankCard(formData: FormData) {
@@ -10,6 +11,11 @@ export const AddBankCard = () => {
     const country = formData.get("country") as string;
     const expiryDate = formData.get("expiryDate") as string;
 
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
     await prisma.bankCard.create({
       data: {
         cardNumber,
@@ -17,6 +23,7 @@ export const AddBankCard = () => {
         lastName,
         country,
         expiryDate,
+        userId: userId, 
       },
     });
   }
