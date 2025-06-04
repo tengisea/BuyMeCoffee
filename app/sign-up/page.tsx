@@ -1,11 +1,11 @@
 "use client"
 
-import { SignIn } from "@clerk/nextjs";
+import { SignUp } from "@clerk/nextjs";
 import Image from "next/legacy/image";
 import { Logo } from "../Button";
 import { Button } from "@/components/ui/button";
 
-const SignInPage = () => {
+const SignUpPage = () => {
   return (
     <div className="flex min-h-screen">
       <div className="w-1/2 bg-[#FBBF24]">
@@ -33,16 +33,16 @@ const SignInPage = () => {
         <div className="flex justify-end pr-10 pt-5">
           <Button
             variant="ghost"
-            onClick={() => (window.location.href = "/sign-up")}>
-            Sign Up
+            onClick={() => (window.location.href = "/sign-in")}>
+            Sign In
           </Button>
         </div>
         <div className="flex items-center justify-center h-full">
-          <SignIn routing="hash" />
+          <SignUp routing="hash" />
         </div>
       </div>
     </div>
   );
 };
 
-export default SignInPage;
+export default SignUpPage;

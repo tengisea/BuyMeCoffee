@@ -12,7 +12,7 @@ export const ImageUpload = () => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file)); // 👁 preview
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -35,7 +35,6 @@ export const ImageUpload = () => {
 
   return (
     <div className="relative w-full">
-      {/* Hidden input */}
       <input
         type="file"
         accept="image/*"
@@ -44,9 +43,8 @@ export const ImageUpload = () => {
         className="hidden"
       />
 
-      {/* Styled label as button */}
       <label
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => fileInputRef.current?.click()} onChange={handleUpload}
         className="w-40 h-40 rounded-full border-dashed border-2 border-gray-300 flex items-center justify-center text-gray-500 cursor-pointer">
         {previewUrl ? (
           <img
@@ -58,12 +56,6 @@ export const ImageUpload = () => {
           <Camera className="w-6 h-6" />
         )}
       </label>
-
-      <button
-        onClick={handleUpload}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-        Submit
-      </button>
     </div>
   );
 };
