@@ -1,21 +1,19 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { Header, NavBar, CreateProfile } from "./components";
+import { Header, NavBar } from "./components";
+import AddBankCardProfile from "./components/AddBankCard";
 
 export default async function Page() {
-  const { userId } = await auth();
-
   const user = await currentUser();
 
-  if (!user) {
-    return <div>Welcome, guest!</div>;
-  }
+  // console.log(user);
+  
   return (
     <div className="flex flex-row">
       <Header/>
       <NavBar />
       <div>
         <div>
-          {user ? <p>Welcome, user {userId}</p> : <p>Welcome, guest!</p>}
+          {user ? <p>Welcome, user {user.username}</p> : <p>Welcome, guest!</p>}
         </div>
     
       </div>

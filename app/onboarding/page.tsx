@@ -8,6 +8,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import NewProfile from "../components/NewProfile";
 import AddBankCardProfile from "../components/AddBankCard";
+import { Loading } from "../components";
 
 export default function OnboardingComponent() {
   const [error, setError] = React.useState("");
@@ -34,7 +35,7 @@ export default function OnboardingComponent() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const StepsComponents = [NewProfile, AddBankCardProfile][currentStep];
+  const StepsComponents = [NewProfile, AddBankCardProfile, Loading][currentStep];
 
   return (
     <div className="flex justify-center items-center mt-30">
