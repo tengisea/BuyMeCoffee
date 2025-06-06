@@ -1,19 +1,28 @@
 "use server";
-import { z } from "zod/v4";
+
+import { z } from "zod";
 import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
 
 const schemaBankCardProfile = z.object({
   cardNumber: z
     .string()
-    .min(1, "Please enter your card number")
-    .regex(/^[0-9]+$/, "Card number must contain only digits")
-    .min(13, "Card number is too short")
-    .max(19, "Card number is too long"),
-  firstName: z.string().min(3, { message: "Please enter your first name" }),
-  lastName: z.string().min(3, { message: "Please enter your last name" }),
+    .transform((val) => val.replace(/-/g, ""))
+    .refine((val) => /^\d+$/.test(val), {
+      message: "Card number must contain only digits",
+    })
+    .refine((val) => val.length >= 13, {
+      message: "Card number is too short",
+    })
+    .refine((val) => val.length <= 19, {
+      message: "Card number is too long",
+    }),
+  firstName: z.string().min(3, "Please enter your first name"),
+
+  lastName: z.string().min(3, "Please enter your last name"),
+
   country: z.string().min(2, "Country is required"),
+
   expiryDate: z
     .string()
     .regex(
@@ -23,53 +32,57 @@ const schemaBankCardProfile = z.object({
     .refine((val) => {
       const [year, month] = val.split("-");
       const expiry = new Date(parseInt(year), parseInt(month) - 1);
-      const today = new Date();
-
       expiry.setMonth(expiry.getMonth() + 1);
-      return expiry > today;
+      return expiry > new Date();
     }, "Card has expired"),
 });
 
-export const addBankCard = async (previous: unknown, formData: FormData) => {
+export const addBankCard = async (_: unknown, formData: FormData) => {
   const user = await currentUser();
-  console.log({ asd: formData.get("country")?.toString() });
-  const cardNumber = formData.get("cardNumber")?.toString() || "";
-  const firstName = formData.get("firstName")?.toString() || "";
-  const lastName = formData.get("lastName")?.toString() || "";
-  const country = formData.get("country")?.toString() || "";
-  const expiryDate = formData.get("expiryDate")?.toString() || "";
 
-  const validateFormData = schemaBankCardProfile.safeParse({
-    cardNumber,
-    firstName,
-    lastName,
-    country,
-    expiryDate,
-  });
-
-  if (!validateFormData.success) {
+  if (!user || !user.id) {
     return {
-      ZodError: validateFormData.error.flatten().fieldErrors,
-      message: "Missing Fields, Failed to maka a profile",
+      message: "Unauthorized: User not found.",
+      ZodError: {},
     };
   }
 
-  // const cardNumber = formData.get("cardNumber") as string;
-  // const firstName = formData.get("firstName") as string;
-  // const lastName = formData.get("lastName") as string;
-  // const country = formData.get("country") as string;
-  // const expiryDate = formData.get("expiryDate") as string;
+  const values = {
+    cardNumber: formData.get("cardNumber")?.toString() || "",
+    firstName: formData.get("firstName")?.toString() || "",
+    lastName: formData.get("lastName")?.toString() || "",
+    country: formData.get("country")?.toString() || "",
+    expiryDate: formData.get("expiryDate")?.toString() || "",
+  };
 
-  await prisma.bankCard.create({
-    data: {
-      cardNumber,
-      firstName,
-      lastName,
-      country,
-      expiryDate,
-      userId: String(user?.id),
-    },
-  });
+  const validation = schemaBankCardProfile.safeParse(values);
+  if (!validation.success) {
+    return {
+      ZodError: validation.error.flatten().fieldErrors,
+      message: "Validation failed. Please check the fields.",
+    };
+  }
 
-  redirect("/");
+  try {
+    await prisma.bankCard.create({
+      data: {
+        ...validation.data,
+        userId: user.id,
+      },
+    });
+
+    return {
+      data: {
+        success: true,
+      },
+      message: "Bank card successfully added.",
+      ZodError: {},
+    };
+  } catch (error) {
+    console.error("Database error:", error);
+    return {
+      message: "An unexpected error occurred while saving the bank card.",
+      ZodError: {},
+    };
+  }
 };

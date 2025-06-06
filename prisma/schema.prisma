@@ -36,17 +36,17 @@ model Donation {
 }
 
 model Profile {
-  id                Int        @id @default(autoincrement())
-  userId            String     @unique
-  email             String     @unique
-  name              String
-  about             String
-  avatarImage       String
-  receivedDonations Donation[] @relation("ProfileReceivedDonations")
-  socialMediaURL    String
-  backgroundImage   String
-  successMessage    String
-  bankCard          BankCard?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  id                 Int        @id @default(autoincrement())
+  userId             String     @unique
+  email              String     @unique
+  name               String
+  about              String
+  avatarImage        String
+  receivedDonations  Donation[] @relation("ProfileReceivedDonations")
+  socialMediaURL     String
+  backgroundImage    String
+  successMessage     String
+  bankCard           BankCard?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
 }
