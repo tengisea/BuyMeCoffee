@@ -1,4 +1,3 @@
-// app/actions/completeOnboarding.ts (server action)
 "use server";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";

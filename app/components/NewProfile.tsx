@@ -1,17 +1,17 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import {
+  useActionState,
+  useEffect,
+  useState
+} from "react";
 import Form from "next/form";
 import { createProfile } from "../actions/CreateProfile";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ImageUpload } from "../api";
 import { ZodErrors } from "./ZodError";
-
-import { useUser } from "@clerk/nextjs";
-
-// Types
+import { ImageUpload } from "../api";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -23,7 +23,7 @@ type FormState = {
     name?: string[];
     about?: string[];
     socialMediaURL?: string[];
-    avatarImage?: string[];
+    avatarImageUrl?: string[];
   };
   message: string;
   data?: {
@@ -42,8 +42,8 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
     createProfile,
     INITIAL_STATE
   );
+  const [avatarImageUrl, setAvatarImageUrl] = useState("");
 
-  const { user } = useUser();
 
   useEffect(() => {
     const noErrors = Object.values(formState?.ZodError || {}).every(
@@ -53,19 +53,23 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
     if (noErrors && formState?.data?.success) {
       nextStep();
     }
-  }, [formState, nextStep]);
-
+  }, [formState]);
+  
   return (
     <div className="w-127 w-max-168 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Complete your profile page</h3>
       <Form action={formAction} className="space-y-6">
-        <label htmlFor="avatarImage" className="block text-lg mb-3 font-medium">
-          Add photo
-        </label>
+        <div className="flex flex-col gap-2">
+          <Label>Add photo</Label>
+          
+          <ImageUpload
+            onUpload={(url) => {
+              setAvatarImageUrl(url);
+            }}
+          />
 
-        <div className="relative w-full">
-          <ImageUpload />
-          <ZodErrors error={formState?.ZodError?.avatarImage} />
+          <input type="hidden" name="avatarImageUrl" value={avatarImageUrl} />
+          <ZodErrors error={formState?.ZodError?.avatarImageUrl} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -85,8 +89,7 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
             type="text"
             id="about"
             name="about"
-            placeholder="Write about yourself here"
-            className="min-h-20"
+            placeholder="Write about yourself"
           />
           <ZodErrors error={formState?.ZodError?.about} />
         </div>
@@ -103,7 +106,10 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
         </div>
 
         <div className="flex justify-end">
-          <Button type="submit" className="py-3 w-1/2 rounded-lg">
+          <Button
+            type="submit"
+            className="py-3 w-1/2 rounded-lg"
+            disabled={!avatarImageUrl}>
             Continue
           </Button>
         </div>

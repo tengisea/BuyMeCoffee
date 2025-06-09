@@ -1,15 +1,14 @@
 "use server";
 
 import { z } from "zod";
-import { currentUser, clerkClient } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
+import { users } from "@clerk/clerk-sdk-node"; // 👈 энд clerk-sdk-node ашиглаж байна
 import prisma from "@/lib/prisma";
 
 const schemaUserProfile = z.object({
-  avatarImage: z
-    .any()
-    .refine((file) => file instanceof File && file.name.length > 0, {
-      message: "Please upload an image",
-    }),
+  avatarImageUrl: z
+    .string()
+    .url({ message: "Please upload a valid image URL." }),
   name: z.string().min(3, { message: "Please enter name" }),
   about: z.string().min(1, { message: "Please enter info about yourself" }),
   socialMediaURL: z.string().url({ message: "Please enter a valid URL" }),
@@ -26,7 +25,7 @@ export const createProfile = async (prev: any, formData: FormData) => {
   }
 
   const parsed = schemaUserProfile.safeParse({
-    avatarImage: formData.get("avatarImage"),
+    avatarImageUrl: formData.get("avatarImageUrl"),
     name: formData.get("name"),
     about: formData.get("about"),
     socialMediaURL: formData.get("socialMediaURL"),
@@ -39,19 +38,16 @@ export const createProfile = async (prev: any, formData: FormData) => {
     };
   }
 
-  const avatarImageFile = formData.get("avatarImage") as File;
-  const avatarImageUrl = avatarImageFile.name; 
-  const name = formData.get("name") as string;
-  const about = formData.get("about") as string;
-  const socialMediaURL = formData.get("socialMediaURL") as string;
+  const { avatarImageUrl, name, about, socialMediaURL } = parsed.data;
 
-  const clerk = await clerkClient();
-  await clerk.users.updateUser(user.id, {
-    publicMetadata: {
-      avatarImageUrl: avatarImageUrl,
-    },
-  });
+  // Fetch the image and convert it to a Blob
+  const imageResponse = await fetch(avatarImageUrl);
+  const imageBlob = await imageResponse.blob();
+console.log(imageBlob);
 
+  await users.updateUserProfileImage(user.id, { file: imageBlob });
+
+  // ✅ Prisma-р profile үүсгэх
   await prisma.profile.create({
     data: {
       name,
