@@ -9,6 +9,7 @@ import {
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Header } from "./components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,9 +35,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          className={`${geistSans.variable} ${geistMono.variable} antialiased px-15`}>
           <SignedIn>
             <header className="flex justify-between items-center p-4 gap-4 h-16">
+              <Header/>
               <UserButton />
             </header>
           </SignedIn>

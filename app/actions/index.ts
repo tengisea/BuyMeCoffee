@@ -1,3 +1,3 @@
-export * from "./AddBankCard"
-export * from "./CreateProfile"
-export * from "./CompleteOnBoarding"
+export * from "./addBankCard";
+export * from "./createProfile";
+export * from "./createAdditionalProfileData"

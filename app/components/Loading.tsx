@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/legacy/image";
 import { useUser } from "@clerk/nextjs";
-import { completeOnboarding } from "../actions";
+import { completeOnboarding } from "../onboarding/_actions";
 
 export const Loading = () => {
   const [error, setError] = useState("");

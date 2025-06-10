@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { currentUser } from "@clerk/nextjs/server";
-import { users } from "@clerk/clerk-sdk-node"; // 👈 энд clerk-sdk-node ашиглаж байна
+import { createClerkClient } from "@clerk/backend";
 import prisma from "@/lib/prisma";
 
 const schemaUserProfile = z.object({
@@ -14,7 +14,7 @@ const schemaUserProfile = z.object({
   socialMediaURL: z.string().url({ message: "Please enter a valid URL" }),
 });
 
-export const createProfile = async (prev: any, formData: FormData) => {
+export const createProfile = async (formData: FormData) => {
   const user = await currentUser();
 
   if (!user) {
@@ -40,14 +40,15 @@ export const createProfile = async (prev: any, formData: FormData) => {
 
   const { avatarImageUrl, name, about, socialMediaURL } = parsed.data;
 
-  // Fetch the image and convert it to a Blob
   const imageResponse = await fetch(avatarImageUrl);
   const imageBlob = await imageResponse.blob();
-console.log(imageBlob);
 
-  await users.updateUserProfileImage(user.id, { file: imageBlob });
+  const clerkClient = createClerkClient({
+    secretKey: process.env.CLERK_SECRET_KEY!,
+  });
 
-  // ✅ Prisma-р profile үүсгэх
+  await clerkClient.users.updateUserProfileImage(user.id, { file: imageBlob });
+
   await prisma.profile.create({
     data: {
       name,

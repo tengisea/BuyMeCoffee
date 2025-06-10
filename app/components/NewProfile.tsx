@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  useActionState,
-  useEffect,
-  useState
-} from "react";
+import { useActionState, useEffect, useState } from "react";
 import Form from "next/form";
-import { createProfile } from "../actions/CreateProfile";
+import { createProfile } from "../actions";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -38,12 +34,18 @@ const INITIAL_STATE: FormState = {
 };
 
 export default function NewProfile({ nextStep }: ProfileStepProps) {
+  const profileReducer = async (
+    _state: FormState,
+    formData: FormData
+  ): Promise<FormState> => {
+    return await createProfile(formData);
+  };
+
   const [formState, formAction] = useActionState<FormState, FormData>(
-    createProfile,
+    profileReducer,
     INITIAL_STATE
   );
   const [avatarImageUrl, setAvatarImageUrl] = useState("");
-
 
   useEffect(() => {
     const noErrors = Object.values(formState?.ZodError || {}).every(
@@ -54,14 +56,14 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
       nextStep();
     }
   }, [formState]);
-  
+
   return (
     <div className="w-127 w-max-168 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Complete your profile page</h3>
       <Form action={formAction} className="space-y-6">
         <div className="flex flex-col gap-2">
           <Label>Add photo</Label>
-          
+
           <ImageUpload
             onUpload={(url) => {
               setAvatarImageUrl(url);

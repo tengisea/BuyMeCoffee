@@ -4,10 +4,11 @@ import * as React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import NewProfile from "../components/NewProfile";
 import AddBankCardProfile from "../components/AddBankCard";
+import StepThree from "../components/StepThree";
 import { Loading } from "../components";
 
 export default function OnboardingComponent() {
-  const [currentStep, setCurrentStep] = React.useState(0);;
+  const [currentStep, setCurrentStep] = React.useState(0);
 
   const nextStep = () => {
     setCurrentStep((prev) => {
@@ -18,7 +19,9 @@ export default function OnboardingComponent() {
 
   const previousStep = () => setCurrentStep((prev) => prev - 1);
 
-  const stepsArray = [NewProfile, AddBankCardProfile, Loading];
+  const stepsArray = [NewProfile, AddBankCardProfile, 
+    StepThree, 
+    Loading];
   const StepsComponent = stepsArray[currentStep];
 
   if (!StepsComponent) {

@@ -37,7 +37,7 @@ const schemaBankCardProfile = z.object({
     }, "Card has expired"),
 });
 
-export const addBankCard = async (_: unknown, formData: FormData) => {
+export const addBankCardAction = async (_: unknown, formData: FormData) => {
   const user = await currentUser();
 
   if (!user || !user.id) {

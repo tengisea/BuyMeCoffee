@@ -10,7 +10,7 @@ import countries from "world-countries";
 import { Input, Label, Button } from "@/components/ui";
 import { FormField } from "@/components/ui/form";
 import { ZodErrors } from "./ZodError";
-import { addBankCard } from "../actions/AddBankCard";
+import { addBankCardAction } from "../actions";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -52,7 +52,7 @@ export default function AddBankCardProfile({
   previousStep,
 }: ProfileStepProps) {
   const [formState, formAction] = React.useActionState<FormState, FormData>(
-    addBankCard,
+    addBankCardAction,
     INITIAL_STATE
   );
   const [cardNumber, setCardNumber] = useState("");
@@ -74,7 +74,7 @@ export default function AddBankCardProfile({
   const formatCardNumber = (value: string) => {
     return value
       .replace(/\D/g, "")
-      .replace(/(.{4})/g, "$1-") 
+      .replace(/(.{4})/g, "$1-")
       .slice(0, 19);
   };
 
