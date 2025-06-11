@@ -45,12 +45,12 @@ export const BackgroundImage = ({ onUpload }: Props) => {
       />
       <label
         onClick={() => fileInputRef.current?.click()}
-        className="w-400 h-150 rounded-full border-dashed border-2 border-gray-300 flex items-center justify-center text-gray-500 cursor-pointer">
+        className="w-150 h-80 rounded border-dashed border-2 border-gray-300 flex items-center justify-center text-gray-500 cursor-pointer">
         {previewUrl ? (
           <img
             src={previewUrl}
             alt="Preview"
-            className="w-full h-full rounded-full object-cover"
+            className="w-full h-full rounded object-cover"
           />
         ) : (
           <Camera className="w-10 h-10" />

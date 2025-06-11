@@ -19,9 +19,7 @@ export default function OnboardingComponent() {
 
   const previousStep = () => setCurrentStep((prev) => prev - 1);
 
-  const stepsArray = [NewProfile, AddBankCardProfile, 
-    StepThree, 
-    Loading];
+  const stepsArray = [NewProfile, AddBankCardProfile, StepThree, Loading];
   const StepsComponent = stepsArray[currentStep];
 
   if (!StepsComponent) {

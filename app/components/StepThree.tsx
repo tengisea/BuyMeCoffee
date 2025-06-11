@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import Form from "next/form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ZodErrors } from "./ZodError";
 import { BackgroundImage } from "../api";
+import { createAdditionalProfileData } from "../actions/createAdditionalProfileData";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -19,43 +21,48 @@ type FormState = {
     successMessage?: string[];
   };
   message: string;
+  data?: {
+    success: boolean;
+  };
+};
+
+const INITIAL_STATE: FormState = {
+  ZodError: {},
+  message: "",
+  data: undefined,
 };
 
 export default function StepThree({ nextStep }: ProfileStepProps) {
   const [backgroundImageUrl, setBackgroundImageUrl] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [formState, setFormState] = useState<FormState>({
-    ZodError: {},
-    message: "",
-  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const res = await fetch("/api/additional-profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ backgroundImageUrl, successMessage }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      setFormState({ ZodError: {}, message: "Success" });
-      nextStep();
-    } else {
-      setFormState({
-        ZodError: data.errors || {},
-        message: data.error || "Something went wrong",
-      });
-    }
+  const profileReducer = async (
+    _state: FormState,
+    formData: FormData
+  ): Promise<FormState> => {
+    return await createAdditionalProfileData(formData);
   };
+
+  const [formState, formAction] = useActionState<FormState, FormData>(
+    profileReducer,
+    INITIAL_STATE
+  );
+
+  useEffect(() => {
+    const noErrors = Object.values(formState?.ZodError || {}).every(
+      (fieldErrors) => !fieldErrors || fieldErrors.length === 0
+    );
+
+    if (noErrors && formState?.data?.success) {
+      nextStep();
+    }
+  }, [formState]);
 
   return (
     <div className="w-127 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Customize Your Profile</h3>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <Form action={formAction} className="space-y-6">
+
         <div className="flex flex-col gap-2">
           <Label>Upload Background Image</Label>
           <BackgroundImage onUpload={(url) => setBackgroundImageUrl(url)} />
@@ -64,7 +71,7 @@ export default function StepThree({ nextStep }: ProfileStepProps) {
             name="backgroundImageUrl"
             value={backgroundImageUrl}
           />
-          <ZodErrors error={formState.ZodError.backgroundImageUrl} />
+          <ZodErrors error={formState?.ZodError?.backgroundImageUrl} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -73,10 +80,8 @@ export default function StepThree({ nextStep }: ProfileStepProps) {
             id="successMessage"
             name="successMessage"
             placeholder="Thanks for your support!"
-            value={successMessage}
-            onChange={(e) => setSuccessMessage(e.target.value)}
           />
-          <ZodErrors error={formState.ZodError.successMessage} />
+          <ZodErrors error={formState?.ZodError?.successMessage} />
         </div>
 
         <div className="flex justify-end">
@@ -87,7 +92,7 @@ export default function StepThree({ nextStep }: ProfileStepProps) {
             Save & Continue
           </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }

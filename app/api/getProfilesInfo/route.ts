@@ -1,4 +1,5 @@
-// app/api/getProfilesInfo/route.ts
+"use server"
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
