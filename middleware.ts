@@ -5,6 +5,8 @@ const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
 const isPublicRoute = createRouteMatcher([
   "/sign-in",
   "/sign-up",
+  "/explore",
+  "/explore/:userId(.*)",
   "/",
   // энд бусад нээлттэй (public) route-уудыг нэмээрэй
 ]);

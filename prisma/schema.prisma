@@ -7,6 +7,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model BankCard {
   id         Int      @id @default(autoincrement())
   country    String
@@ -25,28 +26,27 @@ model Donation {
   amount                       Int
   specialMessage               String
   sspecialURLOrBuyMeACoffeeURL String
-  donorId                      String
+  donorId                      String?
+  donorName                    String
   recipent                     String
   recipentId                   Int
-  recipientProfile             Profile   @relation("ProfileReceivedDonations", fields: [recipentId], references: [id])
-  createdAt                    DateTime  @default(now())
-  updatedAt                    DateTime  @updatedAt
+  recipientProfile             Profile  @relation("ProfileReceivedDonations", fields: [recipentId], references: [id])
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
 }
 
- model Profile {
-  id                 Int        @id @default(autoincrement())
-  userId             String     @unique
-  email              String     @unique
-  name               String
-  about              String
-  avatarImage        String
-  receivedDonations  Donation[] @relation("ProfileReceivedDonations")
-  socialMediaURL     String
-  backgroundImage    String
-  successMessage     String
-  bankCard           BankCard?  
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
+model Profile {
+  id                Int        @id @default(autoincrement())
+  userId            String     @unique
+  email             String     @unique
+  name              String
+  about             String
+  avatarImage       String
+  receivedDonations Donation[] @relation("ProfileReceivedDonations")
+  socialMediaURL    String
+  backgroundImage   String
+  successMessage    String
+  bankCard          BankCard?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
-
-

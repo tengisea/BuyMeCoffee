@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateUser } from "../actions";
-import { NavBar } from "../components";
+import { updateUser } from "@/app/actions";
 
 const AccountSettings = () => {
   const [form, setForm] = useState({ name: "", email: "" });
@@ -25,10 +24,9 @@ const AccountSettings = () => {
       setMessage("Something went wrong.");
     }
   };
-
-  return (
-    <div>
-      <NavBar />
+  
+  export const UpdateAccount = () => {
+    return (
       <div className="max-w-xl mx-auto p-4">
         <form onSubmit={handleSubmit}>
           <h2 className="text-xl font-bold mb-4">Account Settings</h2>
@@ -66,8 +64,6 @@ const AccountSettings = () => {
           {message && <p className="mt-2 text-green-600">{message}</p>}
         </form>
       </div>
-    </div>
-  );
+    );
+  };
 };
-
-export default AccountSettings;

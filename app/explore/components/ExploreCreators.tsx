@@ -32,6 +32,11 @@ const ExploreCreators = () => {
         const res = await fetch(
           `/api/getProfilesInfo?q=${encodeURIComponent(search)}`
         );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch profiles");
+        }
+
         const data = await res.json();
         setProfiles(data);
       } catch (error) {
@@ -41,6 +46,7 @@ const ExploreCreators = () => {
 
     fetchProfiles();
   }, [search]);
+  
 
   return (
     <div className="flex flex-col gap-6">

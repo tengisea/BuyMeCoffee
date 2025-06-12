@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     CLOUDINARY_URL: process.env.CLOUDINARY_URL,
   },
   images: {
-    domains: ["img.clerk.com"],
+    domains: ["img.clerk.com", "res.cloudinary.com"],
   },
 };
 

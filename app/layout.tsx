@@ -1,14 +1,12 @@
 import { type Metadata } from "next";
 import {
   ClerkProvider,
-  SignInButton,
   SignedIn,
-  SignedOut,
+  SignIn,
   UserButton,
 } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import { Header } from "./components";
 
 const geistSans = Geist({
@@ -35,10 +33,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased px-15`}>
+          className={`${geistSans.variable} ${geistMono.variable}`}>
           <SignedIn>
-            <header className="flex justify-between items-center p-4 gap-4 h-16">
-              <Header/>
+            <header className="flex justify-between items-center p-4 px-15 gap-4 h-16">
+              <Header />
               <UserButton />
             </header>
           </SignedIn>
