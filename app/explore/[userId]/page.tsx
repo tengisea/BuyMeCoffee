@@ -4,13 +4,11 @@ import Image from "next/legacy/image";
 import Donate from "../components/Donate";
 import RecentSupporters from "../components/RecentSupporters";
 
-interface PageProps {
-  params: {
-    userId: string;
-  };
-}
-
-export default async function UserProfilePage({ params }: PageProps) {
+export default async function UserProfilePage({
+  params,
+}: {
+  params: { userId: string };
+}) {
   const profile = await getProfileByUserId(params.userId);
 
   if (!profile) return notFound();
