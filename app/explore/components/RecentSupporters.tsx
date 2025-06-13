@@ -11,12 +11,9 @@ type Donation = {
   donorName: string;
   recipent: string;
   recipentId: number;
-  // recipentProfile: {
-  //   avatarImage: string;
-  // };
 };
 
-export default function RecentSupporters({
+export default function RecentSupportersFilter({
   donations,
 }: {
   donations: Donation[];
@@ -33,17 +30,9 @@ export default function RecentSupporters({
           className="flex gap-2">
           <div className="flex justify-between items-center gap-3">
             <div className="flex items-center gap-2">
-              {/* {donation.recipentProfile ? (
-                <img
-                  src={donation.recipentProfile.avatarImage}
-                  alt={donation.donorName}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-              ) : ( */}
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
                   {donation.donorName.charAt(0)}
                 </div>
-              {/* )} */}
             </div>
             <div className="flex flex-col gap-2">
               <span className="font-semibold">

@@ -4,9 +4,27 @@ import { Button, Combobox } from "@/components/ui";
 import { useUser } from "@clerk/nextjs";
 import { Copy } from "lucide-react";
 import Image from "next/legacy/image";
+import RecentSupportersFilter from "../explore/components/RecentSupporters";
+import { getProfileWithDonations } from "../actions";
+import { useEffect, useState } from "react";
+import { getProfileByUserId } from "@/app/actions/getProfileByUserId";
 
 export const DashboardProfile = () => {
   const { user } = useUser();
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const data = await getProfileWithDonations();
+      setProfile(data);
+    };
+    fetchProfile();
+  }, []);
+
+  
+
+  const donations = profile?.receivedDonations || [];
+  console.log(donations);
 
   return (
     <div className="flex flex-col p-6 border-1 border-[#E4E4E7] rounded-lg">
@@ -33,7 +51,9 @@ export const DashboardProfile = () => {
           <div className="text-xl font-semibold">Earnings</div>
           <Combobox />
         </div>
-        <div></div>
+        <div>
+          <RecentSupportersFilter donations={donations} />
+        </div>
       </div>
     </div>
   );

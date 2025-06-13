@@ -5,3 +5,4 @@ export * from "./Header";
 export * from "./Loading";
 export * from "./ZodError";
 export * from "./DashboardProfile"
+export * from "./RecentSupportersFilter"

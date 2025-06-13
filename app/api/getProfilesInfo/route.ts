@@ -1,4 +1,5 @@
 "use server"
+// api/getProfilesInfo
 
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
