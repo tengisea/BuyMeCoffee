@@ -3,8 +3,6 @@
 import prisma from "@/lib/prisma";
 
 export async function getProfileByUserId(userId: string) {
-  if (!userId) return null;
-
   const profile = await prisma.profile.findUnique({
     where: { userId },
     include: {
@@ -14,7 +12,7 @@ export async function getProfileByUserId(userId: string) {
           id: true,
           amount: true,
           specialMessage: true,
-          sspecialURLOrBuyMeACoffeeURL: true, 
+          sspecialURLOrBuyMeACoffeeURL: true,
           donorId: true,
           donorName: true,
           recipent: true,

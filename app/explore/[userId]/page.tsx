@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { getProfileByUserId } from "@/app/actions/getProfileByUserId";
 import Image from "next/legacy/image";
-import Donate from "../components/Donate";
-import RecentSupporters from "../components/RecentSupporters";
+import DonateForm from "../components/Donate";
+import RecentSupporters from "./components/RecentSupporters";
 
 type Props = {
   params: {
@@ -64,7 +64,7 @@ export default async function UserProfilePage({ params }: Props) {
           </div>
         </div>
 
-        <Donate
+        <DonateForm
           profile={{
             id: profile.id,
             name: profile.name,

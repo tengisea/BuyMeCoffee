@@ -4,10 +4,9 @@ import { Button, Combobox } from "@/components/ui";
 import { useUser } from "@clerk/nextjs";
 import { Copy } from "lucide-react";
 import Image from "next/legacy/image";
-import RecentSupportersFilter from "../explore/components/RecentSupporters";
+import RecentSupportersFilter from "../explore/[userId]/components/RecentSupporters";
 import { getProfileWithDonations } from "../actions";
 import { useEffect, useState } from "react";
-import { getProfileByUserId } from "@/app/actions/getProfileByUserId";
 
 export const DashboardProfile = () => {
   const { user } = useUser();
@@ -20,8 +19,6 @@ export const DashboardProfile = () => {
     };
     fetchProfile();
   }, []);
-
-  
 
   const donations = profile?.receivedDonations || [];
   console.log(donations);
