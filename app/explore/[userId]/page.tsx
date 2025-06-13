@@ -4,11 +4,13 @@ import Image from "next/legacy/image";
 import Donate from "../components/Donate";
 import RecentSupporters from "../components/RecentSupporters";
 
-export default async function UserProfilePage({
-  params,
-}: {
-  params: { userId: string };
-}) {
+type Props = {
+  params: {
+    userId: string;
+  };
+};
+
+export default async function UserProfilePage({ params }: Props) {
   const profile = await getProfileByUserId(params.userId);
 
   if (!profile) return notFound();
@@ -17,48 +19,51 @@ export default async function UserProfilePage({
     <div className="relative w-full">
       <div className="absolute inset-0 w-full h-[420px]">
         <Image
-          src={profile.backgroundImage}
-          alt={profile.name}
+          src={profile.backgroundImage || "/default-bg.jpg"}
+          alt={`${profile.name}'s background`}
           layout="fill"
           objectFit="cover"
           priority
           className="w-full h-full"
         />
       </div>
-      <div className="absolute top-60 left-1/2 transform -translate-x-1/2 w-full max-w-3xl z-10 flex justify-center items-start gap-2">
-        <div
-          className="flex flex-col gap-5 px-6"
-          style={{ pointerEvents: "auto" }}>
-          <div className="p-6 border-1 rounded bg-white bg-opacity-90 shadow-lg w-145">
-            <div className="flex items-center gap-3 border-b-1 pb-4">
+
+      <div className="absolute top-60 left-1/2 transform -translate-x-1/2 w-full max-w-3xl z-10 flex justify-center items-start gap-6 px-4">
+        <div className="flex flex-col gap-6 w-full max-w-md">
+          <div className="p-6 border rounded bg-white bg-opacity-90 shadow-lg">
+            <div className="flex items-center gap-4 border-b pb-4">
               <Image
-                src={profile.avatarImage}
-                alt={profile.name}
-                className="rounded-full my-4"
+                src={profile.avatarImage || "/avatar-placeholder.png"}
+                alt={`${profile.name}'s avatar`}
+                className="rounded-full"
                 width={48}
                 height={48}
               />
               <h1 className="text-2xl font-bold">{profile.name}</h1>
             </div>
-            <div className="mb-2 flex flex-col gap-2 pt-5">
+            <div className="pt-5">
               <strong>About {profile.name}</strong>
-              <p>{profile.about}</p>
+              <p className="mt-2 text-gray-700">{profile.about}</p>
             </div>
           </div>
-          <div className="p-6 border-1 rounded flex flex-col gap-4 bg-white bg-opacity-90 shadow-lg">
-            <strong>Social media URL</strong>{" "}
+
+          <div className="p-6 border rounded bg-white bg-opacity-90 shadow-lg">
+            <strong>Social Media</strong>
             <a
               href={profile.socialMediaURL}
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+              className="block text-blue-600 underline break-all mt-2">
               {profile.socialMediaURL}
             </a>
           </div>
-          <div className="p-6 border-1 rounded flex flex-col gap-4 bg-white bg-opacity-90 shadow-lg">
+
+          <div className="p-6 border rounded bg-white bg-opacity-90 shadow-lg">
             <strong>Recent Supporters</strong>
             <RecentSupporters donations={profile.receivedDonations} />
           </div>
         </div>
+
         <Donate
           profile={{
             id: profile.id,
